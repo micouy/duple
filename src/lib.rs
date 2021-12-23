@@ -13,23 +13,13 @@ pub trait TupleUnwrap {
     fn unwrap(self) -> Self::Unwrapped;
 }
 
-impl<A> TupleWrap for (A,) {
-    type Wrapped = W<A, ()>;
-
-    fn wrap(self) -> Self::Wrapped {
-        let (a,) = self;
-
-        W(a, ())
-    }
-}
-
 impl<A> TupleUnwrap for W<A, ()> {
-    type Unwrapped = (A,);
+    type Unwrapped = A;
 
     fn unwrap(self) -> Self::Unwrapped {
         let W(a, ()) = self;
 
-        (a,)
+        a
     }
 }
 
@@ -289,8 +279,9 @@ mod test {
 
     #[test]
     fn test() {
-        assert_eq!(('a', 'b').rem1(), ('b',));
-        assert_eq!(('a', 'b').rem2(), ('a',));
+		// Special case — returns an element, not a tuple!
+        assert_eq!(('a', 'b').rem1(), 'b');
+        assert_eq!(('a', 'b').rem2(), 'a');
 
         assert_eq!(('a', 'b', 'c').rem1(), ('b', 'c'));
         assert_eq!(('a', 'b', 'c').rem2(), ('a', 'c'));
