@@ -1,13 +1,13 @@
 #[derive(Debug, Copy, Clone)]
-struct W<F, R>(F, R);
+pub struct W<F, R>(F, R);
 
-trait TupleWrap {
+pub trait TupleWrap {
     type Wrapped;
 
     fn wrap(self) -> Self::Wrapped;
 }
 
-trait TupleUnwrap {
+pub trait TupleUnwrap {
     type Unwrapped;
 
     fn unwrap(self) -> Self::Unwrapped;
@@ -74,7 +74,7 @@ impl<A, B, C> TupleUnwrap for W<A, W<B, W<C, ()>>> {
 }
 
 impl<A, B, R> W<A, W<B, R>> {
-    fn drop1(self) -> W<B, R> {
+    fn rem1(self) -> W<B, R> {
         let W(_a, rest) = self;
 
         rest
@@ -82,39 +82,55 @@ impl<A, B, R> W<A, W<B, R>> {
 }
 
 impl<A, B, R> W<A, W<B, R>> {
-    fn drop2(self) -> W<A, R> {
+    fn rem2(self) -> W<A, R> {
         let W(a, W(_b, rest)) = self;
 
         W(a, rest)
     }
 }
 
-fn drop1<T, A, B, R>(tuple: T) -> <W<B, R> as TupleUnwrap>::Unwrapped
+pub trait Remove1<A, B, R>: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized
 where
-    T: TupleWrap<Wrapped = W<A, W<B, R>>>,
     W<B, R>: TupleUnwrap,
 {
-    tuple.wrap().drop1().unwrap()
+    fn rem1(self) -> <W<B, R> as TupleUnwrap>::Unwrapped {
+        self.wrap().rem1().unwrap()
+    }
 }
 
-fn drop2<T, A, B, R>(tuple: T) -> <W<A, R> as TupleUnwrap>::Unwrapped
+impl<T, A, B, R> Remove1<A, B, R> for T
 where
-    T: TupleWrap<Wrapped = W<A, W<B, R>>>,
+    T: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
+    W<B, R>: TupleUnwrap,
+{
+}
+
+pub trait Remove2<A, B, R>: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized
+where
     W<A, R>: TupleUnwrap,
 {
-    tuple.wrap().drop2().unwrap()
+    fn rem2(self) -> <W<A, R> as TupleUnwrap>::Unwrapped {
+        self.wrap().rem2().unwrap()
+    }
+}
+
+impl<T, A, B, R> Remove2<A, B, R> for T
+where
+    T: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
+    W<A, R>: TupleUnwrap,
+{
 }
 
 #[cfg(test)]
 mod test {
-	use super::*;
+    use super::*;
 
-	#[test]
+    #[test]
     fn test() {
-        dbg!(drop1(('a', 'b')));
-        dbg!(drop1(('a', 'b', 'c')));
+        dbg!(('a', 'b').rem1());
+        dbg!(('a', 'b', 'c').rem1());
 
-        dbg!(drop2(('a', 'b')));
-        dbg!(drop2(('a', 'b', 'c')));
+        dbg!(('a', 'b').rem2());
+        dbg!(('a', 'b', 'c').rem2());
     }
 }
