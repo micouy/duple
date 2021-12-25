@@ -1,5 +1,5 @@
 #[derive(Debug, Copy, Clone)]
-pub struct W<F, R>(F, R);
+pub struct W<T>(T);
 
 pub trait TupleWrap {
     type Wrapped;
@@ -13,218 +13,218 @@ pub trait TupleUnwrap {
     fn unwrap(self) -> Self::Unwrapped;
 }
 
-impl<A> TupleUnwrap for W<A, ()> {
+impl<A> TupleUnwrap for (A, ()) {
     type Unwrapped = A;
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, ()) = self;
+        let (a, ()) = self;
 
         a
     }
 }
 
 impl<A, B> TupleWrap for (A, B) {
-    type Wrapped = W<A, W<B, ()>>;
+    type Wrapped = (A, (B, ()));
 
     fn wrap(self) -> Self::Wrapped {
         let (a, b) = self;
 
-        W(a, W(b, ()))
+        (a, (b, ()))
     }
 }
 
-impl<A, B> TupleUnwrap for W<A, W<B, ()>> {
+impl<A, B> TupleUnwrap for (A, (B, ())) {
     type Unwrapped = (A, B);
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, W(b, ())) = self;
+        let (a, (b, ())) = self;
 
         (a, b)
     }
 }
 
 impl<A, B, C> TupleWrap for (A, B, C) {
-    type Wrapped = W<A, W<B, W<C, ()>>>;
+    type Wrapped = (A, (B, (C, ())));
 
     fn wrap(self) -> Self::Wrapped {
         let (a, b, c) = self;
 
-        W(a, W(b, W(c, ())))
+        (a, (b, (c, ())))
     }
 }
 
-impl<A, B, C> TupleUnwrap for W<A, W<B, W<C, ()>>> {
+impl<A, B, C> TupleUnwrap for (A, (B, (C, ()))) {
     type Unwrapped = (A, B, C);
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, W(b, W(c, ()))) = self;
+        let (a, (b, (c, ()))) = self;
 
         (a, b, c)
     }
 }
 
 impl<A, B, C, D> TupleWrap for (A, B, C, D) {
-    type Wrapped = W<A, W<B, W<C, W<D, ()>>>>;
+    type Wrapped = (A, (B, (C, (D, ()))));
 
     fn wrap(self) -> Self::Wrapped {
         let (a, b, c, d) = self;
 
-        W(a, W(b, W(c, W(d, ()))))
+        (a, (b, (c, (d, ()))))
     }
 }
 
-impl<A, B, C, D> TupleUnwrap for W<A, W<B, W<C, W<D, ()>>>> {
+impl<A, B, C, D> TupleUnwrap for (A, (B, (C, (D, ())))) {
     type Unwrapped = (A, B, C, D);
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, W(b, W(c, W(d, ())))) = self;
+        let (a, (b, (c, (d, ())))) = self;
 
         (a, b, c, d)
     }
 }
 
 impl<A, B, C, D, E> TupleWrap for (A, B, C, D, E) {
-    type Wrapped = W<A, W<B, W<C, W<D, W<E, ()>>>>>;
+    type Wrapped = (A, (B, (C, (D, (E, ())))));
 
     fn wrap(self) -> Self::Wrapped {
         let (a, b, c, d, e) = self;
 
-        W(a, W(b, W(c, W(d, W(e, ())))))
+        (a, (b, (c, (d, (e, ())))))
     }
 }
 
-impl<A, B, C, D, E> TupleUnwrap for W<A, W<B, W<C, W<D, W<E, ()>>>>> {
+impl<A, B, C, D, E> TupleUnwrap for (A, (B, (C, (D, (E, ()))))) {
     type Unwrapped = (A, B, C, D, E);
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, W(b, W(c, W(d, W(e, ()))))) = self;
+        let (a, (b, (c, (d, (e, ()))))) = self;
 
         (a, b, c, d, e)
     }
 }
 
 impl<A, B, C, D, E, F> TupleWrap for (A, B, C, D, E, F) {
-    type Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, ()>>>>>>;
+    type Wrapped = (A, (B, (C, (D, (E, (F, ()))))));
 
     fn wrap(self) -> Self::Wrapped {
         let (a, b, c, d, e, f) = self;
 
-        W(a, W(b, W(c, W(d, W(e, W(f, ()))))))
+        (a, (b, (c, (d, (e, (f, ()))))))
     }
 }
 
-impl<A, B, C, D, E, F> TupleUnwrap for W<A, W<B, W<C, W<D, W<E, W<F, ()>>>>>> {
+impl<A, B, C, D, E, F> TupleUnwrap for (A, (B, (C, (D, (E, (F, ())))))) {
     type Unwrapped = (A, B, C, D, E, F);
 
     fn unwrap(self) -> Self::Unwrapped {
-        let W(a, W(b, W(c, W(d, W(e, W(f, ())))))) = self;
+        let (a, (b, (c, (d, (e, (f, ())))))) = self;
 
         (a, b, c, d, e, f)
     }
 }
 
-impl<A, B, R> W<A, W<B, R>> {
-    fn rem0(self) -> W<B, R> {
-        let W(_a, rest) = self;
+impl<A, B, R> W<(A, (B, R))> {
+    fn rem0(self) -> (B, R) {
+        let (_a, rest) = self.0;
 
         rest
     }
 }
 
-impl<A, B, R> W<A, W<B, R>> {
-    fn rem1(self) -> W<A, R> {
-        let W(a, W(_b, rest)) = self;
+impl<A, B, R> W<(A, (B, R))> {
+    fn rem1(self) -> (A, R) {
+        let (a, (_b, rest)) = self.0;
 
-        W(a, rest)
+        (a, rest)
     }
 }
 
-impl<A, B, C, R> W<A, W<B, W<C, R>>> {
-    fn rem2(self) -> W<A, W<B, R>> {
-        let W(a, W(b, W(_c, rest))) = self;
+impl<A, B, C, R> W<(A, (B, (C, R)))> {
+    fn rem2(self) -> (A, (B, R)) {
+        let (a, (b, (_c, rest))) = self.0;
 
-        W(a, W(b, rest))
+        (a, (b, rest))
     }
 }
 
-impl<A, B, C, D, R> W<A, W<B, W<C, W<D, R>>>> {
-    fn rem3(self) -> W<A, W<B, W<C, R>>> {
-        let W(a, W(b, W(c, W(_d, rest)))) = self;
+impl<A, B, C, D, R> W<(A, (B, (C, (D, R))))> {
+    fn rem3(self) -> (A, (B, (C, R))) {
+        let (a, (b, (c, (_d, rest)))) = self.0;
 
-        W(a, W(b, W(c, rest)))
+        (a, (b, (c, rest)))
     }
 }
 
-impl<A, B, C, D, E, R> W<A, W<B, W<C, W<D, W<E, R>>>>> {
-    fn rem4(self) -> W<A, W<B, W<C, W<D, R>>>> {
-        let W(a, W(b, W(c, W(d, W(_e, rest))))) = self;
+impl<A, B, C, D, E, R> W<(A, (B, (C, (D, (E, R)))))> {
+    fn rem4(self) -> (A, (B, (C, (D, R)))) {
+        let (a, (b, (c, (d, (_e, rest))))) = self.0;
 
-        W(a, W(b, W(c, W(d, rest))))
+        (a, (b, (c, (d, rest))))
     }
 }
 
-impl<A, B, C, D, E, F, R> W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>> {
-    fn rem5(self) -> W<A, W<B, W<C, W<D, W<E, R>>>>> {
-        let W(a, W(b, W(c, W(d, W(e, W(_f, rest)))))) = self;
+impl<A, B, C, D, E, F, R> W<(A, (B, (C, (D, (E, (F, R))))))> {
+    fn rem5(self) -> (A, (B, (C, (D, (E, R))))) {
+        let (a, (b, (c, (d, (e, (_f, rest)))))) = self.0;
 
-        W(a, W(b, W(c, W(d, W(e, rest)))))
+        (a, (b, (c, (d, (e, rest)))))
     }
 }
 
 pub trait Remove: TupleWrap + Sized {
-    fn rem0<A, B, R>(self) -> <W<B, R> as TupleUnwrap>::Unwrapped
+    fn rem0<A, B, R>(self) -> <(B, R) as TupleUnwrap>::Unwrapped
     where
-        Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
-        W<B, R>: TupleUnwrap,
+        Self: TupleWrap<Wrapped = (A, (B, R))> + Sized,
+        (B, R): TupleUnwrap,
     {
-        self.wrap().rem0().unwrap()
+        W(self.wrap()).rem0().unwrap()
     }
 
-    fn rem1<A, B, R>(self) -> <W<A, R> as TupleUnwrap>::Unwrapped
+    fn rem1<A, B, R>(self) -> <(A, R) as TupleUnwrap>::Unwrapped
     where
-        Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
-        W<A, R>: TupleUnwrap,
+        Self: TupleWrap<Wrapped = (A, (B, R))> + Sized,
+        (A, R): TupleUnwrap,
     {
-        self.wrap().rem1().unwrap()
+        W(self.wrap()).rem1().unwrap()
     }
 
 
-    fn rem2<A, B, C, R>(self) -> <W<A, W<B, R>> as TupleUnwrap>::Unwrapped
+    fn rem2<A, B, C, R>(self) -> <(A, (B, R)) as TupleUnwrap>::Unwrapped
     where
-        Self: TupleWrap<Wrapped = W<A, W<B, W<C, R>>>> + Sized,
-        W<A, W<B, R>>: TupleUnwrap,
+        Self: TupleWrap<Wrapped = (A, (B, (C, R)))> + Sized,
+        (A, (B, R)): TupleUnwrap,
     {
-        self.wrap().rem2().unwrap()
+        W(self.wrap()).rem2().unwrap()
     }
 
     fn rem3<A, B, C, D, R>(
         self,
-    ) -> <W<A, W<B, W<C, R>>> as TupleUnwrap>::Unwrapped
+    ) -> <(A, (B, (C, R))) as TupleUnwrap>::Unwrapped
     where
-        Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, R>>>>> + Sized,
-        W<A, W<B, W<C, R>>>: TupleUnwrap,
+        Self: TupleWrap<Wrapped = (A, (B, (C, (D, R))))> + Sized,
+        (A, (B, (C, R))): TupleUnwrap,
     {
-        self.wrap().rem3().unwrap()
+        W(self.wrap()).rem3().unwrap()
     }
 
     fn rem4<A, B, C, D, E, R>(
         self,
-    ) -> <W<A, W<B, W<C, W<D, R>>>> as TupleUnwrap>::Unwrapped
+    ) -> <(A, (B, (C, (D, R)))) as TupleUnwrap>::Unwrapped
     where
-        Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, R>>>>>> + Sized,
-        W<A, W<B, W<C, W<D, R>>>>: TupleUnwrap,
+        Self: TupleWrap<Wrapped = (A, (B, (C, (D, (E, R)))))> + Sized,
+        (A, (B, (C, (D, R)))): TupleUnwrap,
     {
-        self.wrap().rem4().unwrap()
+        W(self.wrap()).rem4().unwrap()
     }
 
     fn rem5<A, B, C, D, E, F, R>(
         self,
-    ) -> <W<A, W<B, W<C, W<D, W<E, R>>>>> as TupleUnwrap>::Unwrapped
+    ) -> <(A, (B, (C, (D, (E, R))))) as TupleUnwrap>::Unwrapped
 where Self:
-    TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>>> + Sized,
-    W<A, W<B, W<C, W<D, W<E, R>>>>>: TupleUnwrap,
+    TupleWrap<Wrapped = (A, (B, (C, (D, (E, (F, R))))))> + Sized,
+    (A, (B, (C, (D, (E, R))))): TupleUnwrap,
 {
-        self.wrap().rem5().unwrap()
+        W(self.wrap()).rem5().unwrap()
     }
 }
 
