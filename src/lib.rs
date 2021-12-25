@@ -124,7 +124,7 @@ impl<A, B, C, D, E, F> TupleUnwrap for W<A, W<B, W<C, W<D, W<E, W<F, ()>>>>>> {
 }
 
 impl<A, B, R> W<A, W<B, R>> {
-    fn rem1(self) -> W<B, R> {
+    fn rem0(self) -> W<B, R> {
         let W(_a, rest) = self;
 
         rest
@@ -132,7 +132,7 @@ impl<A, B, R> W<A, W<B, R>> {
 }
 
 impl<A, B, R> W<A, W<B, R>> {
-    fn rem2(self) -> W<A, R> {
+    fn rem1(self) -> W<A, R> {
         let W(a, W(_b, rest)) = self;
 
         W(a, rest)
@@ -140,7 +140,7 @@ impl<A, B, R> W<A, W<B, R>> {
 }
 
 impl<A, B, C, R> W<A, W<B, W<C, R>>> {
-    fn rem3(self) -> W<A, W<B, R>> {
+    fn rem2(self) -> W<A, W<B, R>> {
         let W(a, W(b, W(_c, rest))) = self;
 
         W(a, W(b, rest))
@@ -148,7 +148,7 @@ impl<A, B, C, R> W<A, W<B, W<C, R>>> {
 }
 
 impl<A, B, C, D, R> W<A, W<B, W<C, W<D, R>>>> {
-    fn rem4(self) -> W<A, W<B, W<C, R>>> {
+    fn rem3(self) -> W<A, W<B, W<C, R>>> {
         let W(a, W(b, W(c, W(_d, rest)))) = self;
 
         W(a, W(b, W(c, rest)))
@@ -156,7 +156,7 @@ impl<A, B, C, D, R> W<A, W<B, W<C, W<D, R>>>> {
 }
 
 impl<A, B, C, D, E, R> W<A, W<B, W<C, W<D, W<E, R>>>>> {
-    fn rem5(self) -> W<A, W<B, W<C, W<D, R>>>> {
+    fn rem4(self) -> W<A, W<B, W<C, W<D, R>>>> {
         let W(a, W(b, W(c, W(d, W(_e, rest))))) = self;
 
         W(a, W(b, W(c, W(d, rest))))
@@ -164,7 +164,7 @@ impl<A, B, C, D, E, R> W<A, W<B, W<C, W<D, W<E, R>>>>> {
 }
 
 impl<A, B, C, D, E, F, R> W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>> {
-    fn rem6(self) -> W<A, W<B, W<C, W<D, W<E, R>>>>> {
+    fn rem5(self) -> W<A, W<B, W<C, W<D, W<E, R>>>>> {
         let W(a, W(b, W(c, W(d, W(e, W(_f, rest)))))) = self;
 
         W(a, W(b, W(c, W(d, W(e, rest)))))
@@ -172,59 +172,59 @@ impl<A, B, C, D, E, F, R> W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>> {
 }
 
 pub trait Remove: TupleWrap + Sized {
-    fn rem1<A, B, R>(self) -> <W<B, R> as TupleUnwrap>::Unwrapped
+    fn rem0<A, B, R>(self) -> <W<B, R> as TupleUnwrap>::Unwrapped
     where
         Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
         W<B, R>: TupleUnwrap,
     {
-        self.wrap().rem1().unwrap()
+        self.wrap().rem0().unwrap()
     }
 
-    fn rem2<A, B, R>(self) -> <W<A, R> as TupleUnwrap>::Unwrapped
+    fn rem1<A, B, R>(self) -> <W<A, R> as TupleUnwrap>::Unwrapped
     where
         Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
         W<A, R>: TupleUnwrap,
     {
-        self.wrap().rem2().unwrap()
+        self.wrap().rem1().unwrap()
     }
 
 
-    fn rem3<A, B, C, R>(self) -> <W<A, W<B, R>> as TupleUnwrap>::Unwrapped
+    fn rem2<A, B, C, R>(self) -> <W<A, W<B, R>> as TupleUnwrap>::Unwrapped
     where
         Self: TupleWrap<Wrapped = W<A, W<B, W<C, R>>>> + Sized,
         W<A, W<B, R>>: TupleUnwrap,
     {
-        self.wrap().rem3().unwrap()
+        self.wrap().rem2().unwrap()
     }
 
-    fn rem4<A, B, C, D, R>(
+    fn rem3<A, B, C, D, R>(
         self,
     ) -> <W<A, W<B, W<C, R>>> as TupleUnwrap>::Unwrapped
     where
         Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, R>>>>> + Sized,
         W<A, W<B, W<C, R>>>: TupleUnwrap,
     {
-        self.wrap().rem4().unwrap()
+        self.wrap().rem3().unwrap()
     }
 
-    fn rem5<A, B, C, D, E, R>(
+    fn rem4<A, B, C, D, E, R>(
         self,
     ) -> <W<A, W<B, W<C, W<D, R>>>> as TupleUnwrap>::Unwrapped
     where
         Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, R>>>>>> + Sized,
         W<A, W<B, W<C, W<D, R>>>>: TupleUnwrap,
     {
-        self.wrap().rem5().unwrap()
+        self.wrap().rem4().unwrap()
     }
 
-    fn rem6<A, B, C, D, E, F, R>(
+    fn rem5<A, B, C, D, E, F, R>(
         self,
     ) -> <W<A, W<B, W<C, W<D, W<E, R>>>>> as TupleUnwrap>::Unwrapped
 where Self:
     TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>>> + Sized,
     W<A, W<B, W<C, W<D, W<E, R>>>>>: TupleUnwrap,
 {
-        self.wrap().rem6().unwrap()
+        self.wrap().rem5().unwrap()
     }
 }
 
@@ -236,47 +236,47 @@ mod test {
 
     #[test]
     fn test() {
-        // Special case — returns an element, not a tuple!
-        assert_eq!(('a', 'b').rem1(), 'b');
-        assert_eq!(('a', 'b').rem2(), 'a');
+        // Special case — returns the last element, not a tuple!
+        assert_eq!(('a', 'b').rem0(), 'b');
+        assert_eq!(('a', 'b').rem1(), 'a');
 
-        assert_eq!(('a', 'b', 'c').rem1(), ('b', 'c'));
-        assert_eq!(('a', 'b', 'c').rem2(), ('a', 'c'));
-        assert_eq!(('a', 'b', 'c').rem3(), ('a', 'b'));
+        assert_eq!(('a', 'b', 'c').rem0(), ('b', 'c'));
+        assert_eq!(('a', 'b', 'c').rem1(), ('a', 'c'));
+        assert_eq!(('a', 'b', 'c').rem2(), ('a', 'b'));
 
-        assert_eq!(('a', 'b', 'c', 'd').rem1(), ('b', 'c', 'd'));
-        assert_eq!(('a', 'b', 'c', 'd').rem2(), ('a', 'c', 'd'));
-        assert_eq!(('a', 'b', 'c', 'd').rem3(), ('a', 'b', 'd'));
-        assert_eq!(('a', 'b', 'c', 'd').rem4(), ('a', 'b', 'c'));
+        assert_eq!(('a', 'b', 'c', 'd').rem0(), ('b', 'c', 'd'));
+        assert_eq!(('a', 'b', 'c', 'd').rem1(), ('a', 'c', 'd'));
+        assert_eq!(('a', 'b', 'c', 'd').rem2(), ('a', 'b', 'd'));
+        assert_eq!(('a', 'b', 'c', 'd').rem3(), ('a', 'b', 'c'));
 
-        assert_eq!(('a', 'b', 'c', 'd', 'e').rem1(), ('b', 'c', 'd', 'e'));
-        assert_eq!(('a', 'b', 'c', 'd', 'e').rem2(), ('a', 'c', 'd', 'e'));
-        assert_eq!(('a', 'b', 'c', 'd', 'e').rem3(), ('a', 'b', 'd', 'e'));
-        assert_eq!(('a', 'b', 'c', 'd', 'e').rem4(), ('a', 'b', 'c', 'e'));
-        assert_eq!(('a', 'b', 'c', 'd', 'e').rem5(), ('a', 'b', 'c', 'd'));
+        assert_eq!(('a', 'b', 'c', 'd', 'e').rem0(), ('b', 'c', 'd', 'e'));
+        assert_eq!(('a', 'b', 'c', 'd', 'e').rem1(), ('a', 'c', 'd', 'e'));
+        assert_eq!(('a', 'b', 'c', 'd', 'e').rem2(), ('a', 'b', 'd', 'e'));
+        assert_eq!(('a', 'b', 'c', 'd', 'e').rem3(), ('a', 'b', 'c', 'e'));
+        assert_eq!(('a', 'b', 'c', 'd', 'e').rem4(), ('a', 'b', 'c', 'd'));
 
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem1(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem0(),
             ('b', 'c', 'd', 'e', 'f')
         );
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem2(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem1(),
             ('a', 'c', 'd', 'e', 'f')
         );
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem3(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem2(),
             ('a', 'b', 'd', 'e', 'f')
         );
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem4(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem3(),
             ('a', 'b', 'c', 'e', 'f')
         );
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem5(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem4(),
             ('a', 'b', 'c', 'd', 'f')
         );
         assert_eq!(
-            ('a', 'b', 'c', 'd', 'e', 'f').rem6(),
+            ('a', 'b', 'c', 'd', 'e', 'f').rem5(),
             ('a', 'b', 'c', 'd', 'e')
         );
     }

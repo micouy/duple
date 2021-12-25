@@ -6,10 +6,10 @@ proof of concept library that adds methods to remove tuple fields that are gener
 use duple::Remove;
 
 // Special case — returns the last element, not a tuple!
-assert_eq!(('a', 'b').rem1(), 'b');
-assert_eq!(('a', 'b').rem2(), 'a');
+assert_eq!(('a', 'b').rem0(), 'b');
+assert_eq!(('a', 'b').rem1(), 'a');
 
-assert_eq!(('a', 'b', 'c').rem1(), ('b', 'c'));
-assert_eq!(('a', 'b', 'c').rem2(), ('a', 'c'));
-assert_eq!(('a', 'b', 'c').rem3(), ('a', 'b'));
+assert_eq!(('a', 'b', 'c').rem0(), ('b', 'c'));
+assert_eq!(('a', 'b', 'c').rem1(), ('a', 'c'));
+assert_eq!(('a', 'b', 'c').rem2(), ('a', 'b'));
 ```
