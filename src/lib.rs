@@ -171,115 +171,72 @@ impl<A, B, C, D, E, F, R> W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>> {
     }
 }
 
-pub trait Remove1<A, B, R>: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized
-where
-    W<B, R>: TupleUnwrap,
-{
-    fn rem1(self) -> <W<B, R> as TupleUnwrap>::Unwrapped {
+pub trait Remove: TupleWrap + Sized {
+    fn rem1<A, B, R>(self) -> <W<B, R> as TupleUnwrap>::Unwrapped
+    where
+        Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
+        W<B, R>: TupleUnwrap,
+    {
         self.wrap().rem1().unwrap()
     }
-}
 
-impl<T, A, B, R> Remove1<A, B, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
-    W<B, R>: TupleUnwrap,
-{
-}
-
-pub trait Remove2<A, B, R>: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized
-where
-    W<A, R>: TupleUnwrap,
-{
-    fn rem2(self) -> <W<A, R> as TupleUnwrap>::Unwrapped {
+    fn rem2<A, B, R>(self) -> <W<A, R> as TupleUnwrap>::Unwrapped
+    where
+        Self: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
+        W<A, R>: TupleUnwrap,
+    {
         self.wrap().rem2().unwrap()
     }
-}
 
-impl<T, A, B, R> Remove2<A, B, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, R>>> + Sized,
-    W<A, R>: TupleUnwrap,
-{
-}
 
-pub trait Remove3<A, B, C, R>:
-    TupleWrap<Wrapped = W<A, W<B, W<C, R>>>> + Sized
-where
-    W<A, W<B, R>>: TupleUnwrap,
-{
-    fn rem3(self) -> <W<A, W<B, R>> as TupleUnwrap>::Unwrapped {
+    fn rem3<A, B, C, R>(self) -> <W<A, W<B, R>> as TupleUnwrap>::Unwrapped
+    where
+        Self: TupleWrap<Wrapped = W<A, W<B, W<C, R>>>> + Sized,
+        W<A, W<B, R>>: TupleUnwrap,
+    {
         self.wrap().rem3().unwrap()
     }
-}
 
-impl<T, A, B, C, R> Remove3<A, B, C, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, W<C, R>>>> + Sized,
-    W<A, W<B, R>>: TupleUnwrap,
-{
-}
-
-pub trait Remove4<A, B, C, D, R>:
-    TupleWrap<Wrapped = W<A, W<B, W<C, W<D, R>>>>> + Sized
-where
-    W<A, W<B, W<C, R>>>: TupleUnwrap,
-{
-    fn rem4(self) -> <W<A, W<B, W<C, R>>> as TupleUnwrap>::Unwrapped {
+    fn rem4<A, B, C, D, R>(
+        self,
+    ) -> <W<A, W<B, W<C, R>>> as TupleUnwrap>::Unwrapped
+    where
+        Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, R>>>>> + Sized,
+        W<A, W<B, W<C, R>>>: TupleUnwrap,
+    {
         self.wrap().rem4().unwrap()
     }
-}
 
-impl<T, A, B, C, D, R> Remove4<A, B, C, D, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, R>>>>> + Sized,
-    W<A, W<B, W<C, R>>>: TupleUnwrap,
-{
-}
-
-pub trait Remove5<A, B, C, D, E, R>:
-    TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, R>>>>>> + Sized
-where
-    W<A, W<B, W<C, W<D, R>>>>: TupleUnwrap,
-{
-    fn rem5(self) -> <W<A, W<B, W<C, W<D, R>>>> as TupleUnwrap>::Unwrapped {
+    fn rem5<A, B, C, D, E, R>(
+        self,
+    ) -> <W<A, W<B, W<C, W<D, R>>>> as TupleUnwrap>::Unwrapped
+    where
+        Self: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, R>>>>>> + Sized,
+        W<A, W<B, W<C, W<D, R>>>>: TupleUnwrap,
+    {
         self.wrap().rem5().unwrap()
     }
-}
 
-impl<T, A, B, C, D, E, R> Remove5<A, B, C, D, E, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, R>>>>>> + Sized,
-    W<A, W<B, W<C, W<D, R>>>>: TupleUnwrap,
-{
-}
-
-pub trait Remove6<A, B, C, D, E, F, R>:
-    TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>>> + Sized
-where
+    fn rem6<A, B, C, D, E, F, R>(
+        self,
+    ) -> <W<A, W<B, W<C, W<D, W<E, R>>>>> as TupleUnwrap>::Unwrapped
+where Self:
+    TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>>> + Sized,
     W<A, W<B, W<C, W<D, W<E, R>>>>>: TupleUnwrap,
 {
-    fn rem6(
-        self,
-    ) -> <W<A, W<B, W<C, W<D, W<E, R>>>>> as TupleUnwrap>::Unwrapped {
         self.wrap().rem6().unwrap()
     }
 }
 
-impl<T, A, B, C, D, E, F, R> Remove6<A, B, C, D, E, F, R> for T
-where
-    T: TupleWrap<Wrapped = W<A, W<B, W<C, W<D, W<E, W<F, R>>>>>>> + Sized,
-    W<A, W<B, W<C, W<D, W<E, R>>>>>: TupleUnwrap,
-{
-}
+impl<T> Remove for T where T: TupleWrap + Sized {}
 
 #[cfg(test)]
 mod test {
-    use super::*;
+    use super::Remove;
 
     #[test]
     fn test() {
-		// Special case — returns an element, not a tuple!
+        // Special case — returns an element, not a tuple!
         assert_eq!(('a', 'b').rem1(), 'b');
         assert_eq!(('a', 'b').rem2(), 'a');
 
