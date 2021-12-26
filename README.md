@@ -5,7 +5,7 @@ proof of concept library that adds methods to remove tuple fields that are gener
 all of the methods follow the same pattern: they take a type implementing `TupleWrap` with the `Wrapped` associated type of desired 'depth' • calling `TupleWrap::wrap` on a 'flat' tuple returns a corresponding nested tuple, i.e. `(a, b, c)` is turned into `(a, (b, (c, ())))` • then, a function generic over the 'tail' of the nested tuple removes the nth level • a nested tuple with the nth level removed is then unwrapped into a corresponding 'flat' tuple
 
 ```rust
-use duple::Remove;
+use duple::prelude::*;
 
 // Special case — returns the last element, not a tuple!
 assert_eq!(('a', 'b').rem0(), 'b');

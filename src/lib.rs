@@ -1,5 +1,7 @@
+#![allow(clippy::type_complexity, clippy::many_single_char_names)]
+
 #[derive(Debug, Copy, Clone)]
-pub struct W<T>(T);
+struct W<T>(T);
 
 pub trait TupleWrap {
     type Wrapped;
@@ -171,68 +173,121 @@ impl<A, B, C, D, E, F, R> W<(A, (B, (C, (D, (E, (F, R))))))> {
     }
 }
 
-pub trait Remove: TupleWrap + Sized {
-    fn rem0<A, B, R>(self) -> <(B, R) as TupleUnwrap>::Unwrapped
+pub mod prelude {
+	use super::*;
+
+    pub trait TupleRemove0: Sized {
+        type Removed;
+
+        fn rem0(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, R> TupleRemove0 for T
     where
-        Self: TupleWrap<Wrapped = (A, (B, R))> + Sized,
+        T: TupleWrap<Wrapped = (A, (B, R))> + Sized,
         (B, R): TupleUnwrap,
     {
-        W(self.wrap()).rem0().unwrap()
+        type Removed = <(B, R) as TupleUnwrap>::Unwrapped;
+
+        fn rem0(self) -> Self::Removed {
+            W(self.wrap()).rem0().unwrap()
+        }
     }
 
-    fn rem1<A, B, R>(self) -> <(A, R) as TupleUnwrap>::Unwrapped
+    pub trait TupleRemove1: Sized {
+        type Removed;
+
+        fn rem1(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, R> TupleRemove1 for T
     where
-        Self: TupleWrap<Wrapped = (A, (B, R))> + Sized,
+        T: TupleWrap<Wrapped = (A, (B, R))> + Sized,
         (A, R): TupleUnwrap,
     {
-        W(self.wrap()).rem1().unwrap()
+        type Removed = <(A, R) as TupleUnwrap>::Unwrapped;
+
+        fn rem1(self) -> Self::Removed {
+            W(self.wrap()).rem1().unwrap()
+        }
     }
 
+    pub trait TupleRemove2: Sized {
+        type Removed;
 
-    fn rem2<A, B, C, R>(self) -> <(A, (B, R)) as TupleUnwrap>::Unwrapped
+        fn rem2(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, C, R> TupleRemove2 for T
     where
-        Self: TupleWrap<Wrapped = (A, (B, (C, R)))> + Sized,
+        T: TupleWrap<Wrapped = (A, (B, (C, R)))> + Sized,
         (A, (B, R)): TupleUnwrap,
     {
-        W(self.wrap()).rem2().unwrap()
+        type Removed = <(A, (B, R)) as TupleUnwrap>::Unwrapped;
+
+        fn rem2(self) -> Self::Removed {
+            W(self.wrap()).rem2().unwrap()
+        }
     }
 
-    fn rem3<A, B, C, D, R>(
-        self,
-    ) -> <(A, (B, (C, R))) as TupleUnwrap>::Unwrapped
+    pub trait TupleRemove3: Sized {
+        type Removed;
+
+        fn rem3(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, C, D, R> TupleRemove3 for T
     where
-        Self: TupleWrap<Wrapped = (A, (B, (C, (D, R))))> + Sized,
+        T: TupleWrap<Wrapped = (A, (B, (C, (D, R))))> + Sized,
         (A, (B, (C, R))): TupleUnwrap,
     {
-        W(self.wrap()).rem3().unwrap()
+        type Removed = <(A, (B, (C, R))) as TupleUnwrap>::Unwrapped;
+
+        fn rem3(self) -> Self::Removed {
+            W(self.wrap()).rem3().unwrap()
+        }
     }
 
-    fn rem4<A, B, C, D, E, R>(
-        self,
-    ) -> <(A, (B, (C, (D, R)))) as TupleUnwrap>::Unwrapped
+    pub trait TupleRemove4: Sized {
+        type Removed;
+
+        fn rem4(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, C, D, E, R> TupleRemove4 for T
     where
-        Self: TupleWrap<Wrapped = (A, (B, (C, (D, (E, R)))))> + Sized,
+        T: TupleWrap<Wrapped = (A, (B, (C, (D, (E, R)))))> + Sized,
         (A, (B, (C, (D, R)))): TupleUnwrap,
     {
-        W(self.wrap()).rem4().unwrap()
+        type Removed = <(A, (B, (C, (D, R)))) as TupleUnwrap>::Unwrapped;
+
+        fn rem4(self) -> Self::Removed {
+            W(self.wrap()).rem4().unwrap()
+        }
     }
 
-    fn rem5<A, B, C, D, E, F, R>(
-        self,
-    ) -> <(A, (B, (C, (D, (E, R))))) as TupleUnwrap>::Unwrapped
-where Self:
-    TupleWrap<Wrapped = (A, (B, (C, (D, (E, (F, R))))))> + Sized,
-    (A, (B, (C, (D, (E, R))))): TupleUnwrap,
-{
-        W(self.wrap()).rem5().unwrap()
+    pub trait TupleRemove5: Sized {
+        type Removed;
+
+        fn rem5(self) -> Self::Removed;
+    }
+
+    impl<T, A, B, C, D, E, F, R> TupleRemove5 for T
+    where
+        T: TupleWrap<Wrapped = (A, (B, (C, (D, (E, (F, R))))))> + Sized,
+        (A, (B, (C, (D, (E, R))))): TupleUnwrap,
+    {
+        type Removed = <(A, (B, (C, (D, (E, R))))) as TupleUnwrap>::Unwrapped;
+
+        fn rem5(self) -> Self::Removed {
+            W(self.wrap()).rem5().unwrap()
+        }
     }
 }
 
-impl<T> Remove for T where T: TupleWrap + Sized {}
-
 #[cfg(test)]
 mod test {
-    use super::Remove;
+    use super::prelude::*;
 
     #[test]
     fn test() {
