@@ -1,7 +1,15 @@
 [package]
 name = "duple"
-version = "0.1.0"
+authors = ["micouy <m.powierza@tutanota.com>"]
+version = "0.0.1"
 edition = "2018"
 license = "GPL-3.0"
+include = [
+	"src/",
+	"Cargo.toml",
+	"README.md",
+]
+categories = ["rust-patterns"]
+keywords = ["tuple", "tuples"]
 
 [dependencies]
